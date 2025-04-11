@@ -33,49 +33,7 @@
   - Terraform instalado em sua máquina local.
   - Azure CLI instalado e configurado (para autenticação).
 
-### Para implantar essa infraestrutura de banco de dados usando o Terraform com CLI (por garantia, esteja no mesmo diretório que o arquivo `main.tf` se encontra).
-
-Crie um arquivo chamado `main.tf` com o seguinte conteúdo:
-
-```terraform
-terraform {
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 3.0"
-    }
-  }
-}
-
-provider "azurerm" {
-  features {}
-}
-
-resource "azurerm_resource_group" "rg" {
-  name     = "rg-banco-horas"
-  location = "brazilsouth" # Escolha uma região Azure adequada para você
-}
-
-resource "azurerm_postgresql_flexible_server" "postgres_server" {
-  name                   = "postgres-banco-horas"
-  resource_group_name    = azurerm_resource_group.rg.name
-  location             = azurerm_resource_group.rg.location
-  administrator_login    = "adminuser"
-  administrator_password = "YourStrong@Password123" # Substitua por uma senha segura!
-  sku_name               = "Standard_B1ms"          # Escolha um SKU adequado
-  storage_mb             = 5120                     # Tamanho do armazenamento em MB
-  version                = "14"
-}
-
-resource "azurerm_postgresql_flexible_database" "banco_horas_db" {
-  name      = "banco_horas_db"
-  server_id = azurerm_postgresql_flexible_server.postgres_server.id
-}
-
-resource "azurerm_postgresql_flexible_server_firewall_rule" "allow_all" {
-  name                = "AllowAllIPs"
-  server_id           = azurerm_postgresql_flexible_server.postgres_server.id
-  start_ip_address    = "0.0.0.0"
-  end_ip_address      = "255.255.255.255"
-  # ⚠️ Atenção: Em um ambiente de produção, restrinja os IPs de acesso ao banco de dados.
-}
+### Para implantar essa infraestrutura usando o Terraform com CLI é bem simples (por garantia, esteja no mesmo diretório que o arquivo main.tf se encontra). Execute:
+  - <h3>terraform init</h3> para inicializar o Terraform e baixar os provedores.
+  - <h3>terraform plan</h3> para visualizar as alterações que serão feitas.
+  - <h3>terraform apply</h3> para criar os recursos no Azure.
